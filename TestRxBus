@@ -1,0 +1,22 @@
+import org.junit.Test;
+
+public class TestRxBus {
+    
+    
+    @Test
+    public void test( ) {
+        
+        RxBus.toObservable( String.class )
+                .buffer( 2 )
+                .subscribe( System.out::println );
+    
+        RxBus.subscribe( String.class, s -> System.out.println( "X: " + s ) );
+        
+        
+        RxBus.publish( "Object one" );
+        RxBus.publish( "Object two" );
+        RxBus.publish( "Object three" );
+        RxBus.publish( "Object four" );
+        RxBus.publish( "Object five ;(" );
+    }
+}
