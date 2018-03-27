@@ -3,24 +3,19 @@ import io.reactivex.subjects.PublishSubject;
 
 public class RxBus {
     
-    private static RxBus instance;
+    @Getter
+    private static final PublishSubject<Object> publisher = PublishSubject.create();
     
-    private final PublishSubject<Object> publisher = PublishSubject.create();
     
-    private RxBus( ) {
-        instance = this;
-    }
-    
-    private static RxBus getInstance( ) {
-        if ( instance == null ) instance = new RxBus();
-        return instance;
+    public static <T> Observable<T> toObservable( Class<T> eventType ) {
+        return getPublisher().ofType( eventType );
     }
     
     public static void publish( Object event ) {
-        getInstance().publisher.onNext( event );
+        getPublisher().onNext( event );
     }
     
-    public static <T> Observable<T> listen( Class<T> eventType ) {
-        return getInstance().publisher.ofType( eventType );
+    public static <T> Disposable subscribe( Class<T> eventType, Consumer<T> handler ) {
+        return toObservable( eventType ).subscribe( handler );
     }
 }
